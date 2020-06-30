@@ -22,6 +22,13 @@ pipeline {
                   sh 'docker tag python_app 281996/python_app:dev'
                   sh "docker push 281996/python_app"
                 }
+           
+ }
+   stage('Deploy') {
+            steps {
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'deploy', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                   sh './cloudformation/create.sh udacityproject cloudformation/kubernetes_infra.yml cloudformation/infraParams.json'
+                }
             } 
         }
 }
